@@ -2320,19 +2320,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gourav.rattan\\.nuget\\packages\\": {}
+    "C:\\Users\\akash2.kumar\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\MyCommonStructure.csproj",
+      "projectUniqueName": "C:\\Users\\akash2.kumar\\Desktop\\CarsHeaven\\CarsHeaven-Webapi\\MyCommonStructure\\MyCommonStructure.csproj",
       "projectName": "MyCommonStructure",
-      "projectPath": "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\MyCommonStructure.csproj",
-      "packagesPath": "C:\\Users\\gourav.rattan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\obj\\",
+      "projectPath": "C:\\Users\\akash2.kumar\\Desktop\\CarsHeaven\\CarsHeaven-Webapi\\MyCommonStructure\\MyCommonStructure.csproj",
+      "packagesPath": "C:\\Users\\akash2.kumar\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\akash2.kumar\\Desktop\\CarsHeaven\\CarsHeaven-Webapi\\MyCommonStructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gourav.rattan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\akash2.kumar\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
