@@ -27,7 +27,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@UserPassword", req.addInfo["UserPassword"].ToString())
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE UserId=@UserId AND UserPassword = @UserPassword;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE UserId=@UserId AND UserPassword = @UserPassword;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult[0].Count() == 0)
@@ -37,7 +37,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var deleteSql = @"DELETE FROM pc_student.TEDrones_Users WHERE UserId = @UserId AND UserPassword = @UserPassword;";
+                    var deleteSql = @"DELETE FROM pc_student.CarsHeaven_Users WHERE UserId = @UserId AND UserPassword = @UserPassword;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
                     if (rowsAffected != null)
                     {
@@ -88,7 +88,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId;";
                 var checkResult = ds.executeSQL(checkSql, para);
                 if (checkResult[0].Count() == 0)
                 {
@@ -97,7 +97,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var deleteSql = $"DELETE FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId;";
+                    var deleteSql = $"DELETE FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
                     if (rowsAffected == null)
                     {

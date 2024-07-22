@@ -7,14 +7,14 @@ using MySql.Data.MySqlClient;
 
 namespace MyCommonStructure.Services
 {
-    public class contactUs
+    public class feedbacks
     {
         dbServices ds = new dbServices();
         public async Task<responseData> ContactUs(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
-            resData.rData["rMessage"] = "Contact sent successfully";
+            resData.rData["rMessage"] = "Feedback sent successfully";
             try
             {
                 MySqlParameter[] para = new MySqlParameter[]
@@ -27,7 +27,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Address", req.addInfo["Address"].ToString()),
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE Email=@Email;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE Email=@Email;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult == null || checkResult[0].Count() == 0)
@@ -37,7 +37,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var insertSql = $"INSERT INTO pc_student.TEDrones_Contacts (UserName, Email, Phone, Topic, Message, Address) VALUES(@UserName, @Email, @Phone, @Topic, @Message, @Address);";
+                    var insertSql = $"INSERT INTO pc_student.CarsHeaven_Feedback (UserName, Email, Phone, Topic, Message, Address) VALUES(@UserName, @Email, @Phone, @Topic, @Message, @Address);";
                     var insertId = ds.ExecuteInsertAndGetLastId(insertSql, para);
 
                     if (insertId != 0)
@@ -49,7 +49,7 @@ namespace MyCommonStructure.Services
                     else
                     {
                         resData.rData["rCode"] = 1;
-                        resData.rData["rMessage"] = "Failed to submit Contact";
+                        resData.rData["rMessage"] = "Failed to submit Feedback";
                     }
                 }
             }
@@ -61,7 +61,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> DeleteContactById(requestData req)
+        public async Task<responseData> DeleteFeedbackById(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -69,32 +69,32 @@ namespace MyCommonStructure.Services
             {
                 MySqlParameter[] para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@ContactId", req.addInfo["ContactId"].ToString()),
+                    new MySqlParameter("@FeedbackId", req.addInfo["FeedbackId"].ToString()),
                     new MySqlParameter("@Email", req.addInfo["Email"].ToString())
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.TEDrones_Contacts WHERE ContactId=@ContactId OR Email=@Email;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Feedback WHERE FeedbackId=@FeedbackId OR Email=@Email;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Contact not found, No records deleted!";
+                    resData.rData["rMessage"] = "Feedback not found, No records deleted!";
                 }
                 else
                 {
-                    var deleteSql = @"DELETE FROM pc_student.TEDrones_Contacts WHERE ContactId=@ContactId OR Email=@Email;";
+                    var deleteSql = @"DELETE FROM pc_student.CarsHeaven_Feedback WHERE FeedbackId=@FeedbackId OR Email=@Email;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
                     if (rowsAffected == 0)
                     {
                         resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Some error occurred, Contact not deleted!";
+                        resData.rData["rMessage"] = "Some error occurred, Feedback not deleted!";
                     }
                     else
                     {
                         resData.eventID = req.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Contact deleted successfully";
+                        resData.rData["rMessage"] = "Feedback deleted successfully";
                     }
                 }
             }
@@ -107,32 +107,32 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> GetContactById(requestData req)
+        public async Task<responseData> GetFeedbackById(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             resData.eventID = req.eventID;
-            resData.rData["rMessage"] = "Contact details found successfully";
+            resData.rData["rMessage"] = "Feedback details found successfully";
             try
             {
-                string ContactId = req.addInfo["ContactId"].ToString();
+                string FeedbackId = req.addInfo["FeedbackId"].ToString();
                 string Email = req.addInfo["Email"].ToString();
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@ContactId", ContactId),
+                    new MySqlParameter("@FeedbackId", FeedbackId),
                     new MySqlParameter("@Email", Email)
                 };
 
-                var getusersql = $"SELECT * FROM pc_student.TEDrones_Contacts WHERE ContactId=@ContactId OR Email=@Email;";
+                var getusersql = $"SELECT * FROM pc_student.CarsHeaven_Feedback WHERE FeedbackId=@FeedbackId OR Email=@Email;";
                 var data = ds.ExecuteSQLName(getusersql, myParams);
                 if (data == null || data[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 1;
-                    resData.rData["rMessage"] = "Failed to get Contact details!!";
+                    resData.rData["rMessage"] = "Failed to get Feedback details!!";
                 }
                 else
                 {
-                    resData.rData["ContactId"] = data[0][0]["ContactId"];
+                    resData.rData["FeedbackId"] = data[0][0]["FeedbackId"];
                     resData.rData["UserName"] = data[0][0]["UserName"];
                     resData.rData["Phone"] = data[0][0]["Phone"];
                     resData.rData["Email"] = data[0][0]["Email"];
@@ -152,18 +152,18 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> GetAllContacts(requestData req)
+        public async Task<responseData> GetAllFeedbacks(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             resData.eventID = req.eventID;
             try
             {
-                var query = @"SELECT * FROM pc_student.TEDrones_Contacts ORDER BY ContactId DESC";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Feedback ORDER BY FeedbackId DESC";
                 var dbData = ds.executeSQL(query, null);
                 if (dbData == null)
                 {
-                    resData.rData["rMessage"] = "Some error occurred, can't get all Contacts!";
+                    resData.rData["rMessage"] = "Some error occurred, can't get all Feedbacks!";
                     resData.rStatus = 1;
                     return resData;
                 }
@@ -188,15 +188,18 @@ namespace MyCommonStructure.Services
                                 }
                                 var Contact = new
                                 {
-                                    ContactId = rowData.ElementAtOrDefault(0),
-                                    UserName = rowData.ElementAtOrDefault(1),
-                                    Phone = rowData.ElementAtOrDefault(2),
-                                    Email = rowData.ElementAtOrDefault(3),
-                                    Topic = rowData.ElementAtOrDefault(4),
-                                    Message = rowData.ElementAtOrDefault(5),
-                                    SentOn = rowData.ElementAtOrDefault(6),
-                                    ReadStatus = rowData.ElementAtOrDefault(7),
-                                    Address = rowData.ElementAtOrDefault(8),
+                                    FeedbackId = rowData.ElementAtOrDefault(0),
+                                    UserId = rowData.ElementAtOrDefault(1),
+                                    CarId = rowData.ElementAtOrDefault(2),
+                                    UserName = rowData.ElementAtOrDefault(3),
+                                    Email = rowData.ElementAtOrDefault(4),
+                                    Phone = rowData.ElementAtOrDefault(5),
+                                    Address = rowData.ElementAtOrDefault(6),
+                                    Topic = rowData.ElementAtOrDefault(7),
+                                    Message = rowData.ElementAtOrDefault(8),
+                                    Rating = rowData.ElementAtOrDefault(9),
+                                    SentOn = rowData.ElementAtOrDefault(10),
+                                    ReadStatus = rowData.ElementAtOrDefault(11),
                                 };
                                 Contactslist.Add(Contact);
                             }
@@ -204,7 +207,7 @@ namespace MyCommonStructure.Services
                     }
                 }
                 resData.rData["rCode"] = 0;
-                resData.rData["rMessage"] = "All Contacts retrieved successfully";
+                resData.rData["rMessage"] = "All Feedbacks retrieved successfully";
                 resData.rData["Contact"] = Contactslist;
             }
             catch (Exception ex)

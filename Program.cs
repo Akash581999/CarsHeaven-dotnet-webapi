@@ -14,7 +14,7 @@ ConfigureServices(s =>
     s.AddSingleton<resetPassword>();
     s.AddSingleton<editProfile>();
     s.AddSingleton<deleteProfile>();
-    s.AddSingleton<contactUs>();
+    s.AddSingleton<feedbacks>();
     s.AddSingleton<drones>();
     s.AddSingleton<carts>();
     s.AddSingleton<users>();
@@ -95,15 +95,15 @@ ConfigureServices(s =>
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await deleteProfile.DeleteProfileByAdmin(rData)); // delete profile by admin
         });
 
-        var contactUs = e.ServiceProvider.GetRequiredService<contactUs>(); // for contact details
-        e.MapPost("/contactUs", [AllowAnonymous] async (HttpContext http) =>
+        var feedbacks = e.ServiceProvider.GetRequiredService<feedbacks>(); // for feedback details
+        e.MapPost("/feedbacks", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await contactUs.ContactUs(rData));
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await contactUs.DeleteContactById(rData));
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await contactUs.GetContactById(rData));
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await contactUs.GetAllContacts(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await feedbacks.ContactUs(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await feedbacks.DeleteFeedbackById(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await feedbacks.GetFeedbackById(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await feedbacks.GetAllFeedbacks(rData));
         });
 
 

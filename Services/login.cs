@@ -43,7 +43,7 @@ namespace MyCommonStructure.Services
                 }
                 else if (isMobileNumber)
                 {
-                    columnName = "Mobile";
+                    columnName = "Phone";
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace MyCommonStructure.Services
                 new MySqlParameter("@UserPassword", req.addInfo["UserPassword"].ToString())
                 };
 
-                var sq = $"SELECT * FROM pc_student.Alltraxs_users WHERE Role=@Role AND {columnName} = @UserId AND UserPassword = @UserPassword;";
+                var sq = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE Role=@Role AND {columnName} = @UserId AND UserPassword = @UserPassword;";
                 var data = ds.ExecuteSQLName(sq, myParams);
                 if (data == null || data[0].Count() == 0)
                 {
@@ -82,7 +82,7 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
                     };
 
-                    string sessionQuery = @"INSERT INTO pc_student.Alltraxs_UserSessions (UserId, Token) VALUES (@UserId, @Token)";
+                    string sessionQuery = @"INSERT INTO pc_student.CarsHeaven_Sessions (UserId, Token) VALUES (@UserId, @Token)";
                     ds.ExecuteSQLName(sessionQuery, sessionParams);
 
                     resData.eventID = req.eventID;
@@ -119,7 +119,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Token", rData.addInfo["Token"]),
                 };
 
-                string query = @"DELETE FROM pc_student.Alltraxs_UserSessions WHERE UserId=@UserId AND Token = @Token";
+                string query = @"DELETE FROM pc_student.CarsHeaven_Sessions WHERE UserId=@UserId AND Token = @Token";
                 var dbData = ds.ExecuteSQLName(query, myParam);
                 if (dbData.Count() == null)
                 {

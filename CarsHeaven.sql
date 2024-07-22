@@ -47,8 +47,10 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Rentals (
     RentalEnd DATE,
     TotalPrice DECIMAL(10, 2),
     PaymentStatus BOOLEAN DEFAULT FALSE,
+	DriverId INT,
     FOREIGN KEY (CarId) REFERENCES CarsHeaven_Cars(CarId),
-    FOREIGN KEY (UserId) REFERENCES CarsHeaven_Users(UserId)
+    FOREIGN KEY (UserId) REFERENCES CarsHeaven_Users(UserId),
+	FOREIGN KEY (DriverId) REFERENCES CarsHeaven_Drivers(DriverId)
 );
 SELECT * FROM pc_student.CarsHeaven_Rentals;
 
@@ -71,6 +73,19 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Locations (
     ZipCode VARCHAR(10)
 );
 SELECT * FROM pc_student.CarsHeaven_Locations;
+
+CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Drivers (
+    DriverId INT AUTO_INCREMENT PRIMARY KEY,
+    DriverName VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) UNIQUE,
+    Phone VARCHAR(15),
+    DriverPic LONGTEXT,
+    DriverAge INT,
+    LicenseNumber VARCHAR(100) NOT NULL UNIQUE,
+    Address VARCHAR(255),
+    Rating DECIMAL(2, 1) CHECK (Rating >= 1 AND Rating <= 5)
+);
+SELECT * FROM pc_student.CarsHeaven_Drivers;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Feedback (
     FeedbackId INT AUTO_INCREMENT PRIMARY KEY,

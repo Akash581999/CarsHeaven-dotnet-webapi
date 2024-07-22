@@ -50,7 +50,7 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@NewPassword", NewPassword),
                     };
 
-                    var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId AND UserPassword = @UserPassword;";
+                    var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId AND UserPassword = @UserPassword;";
                     var checkResult = ds.executeSQL(checkSql, parameters);
                     if (checkResult[0].Count() == 0)
                     {
@@ -60,7 +60,7 @@ namespace MyCommonStructure.Services
                     }
                     else
                     {
-                        string updateSql = $"UPDATE pc_student.TEDrones_Users SET UserPassword = @NewPassword WHERE {columnName} = @UserId";
+                        string updateSql = $"UPDATE pc_student.CarsHeaven_Users SET UserPassword = @NewPassword WHERE {columnName} = @UserId";
                         var rowsAffected = ds.executeSQL(updateSql, parameters);
                         if (rowsAffected[0].Count() != 0)
                         {

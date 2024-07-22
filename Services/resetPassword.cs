@@ -43,7 +43,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@NewPassword", NewPassword)
                 };
 
-                var selectSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId;";
+                var selectSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId;";
                 var data = ds.ExecuteSQLName(selectSql, para);
                 if (data == null || data[0].Count() == 0)
                 {
@@ -54,11 +54,11 @@ namespace MyCommonStructure.Services
                 {
                     if (NewPassword == ConfirmPassword)
                     {
-                        var updateSql = $"UPDATE pc_student.TEDrones_Users SET UserPassword = @NewPassword WHERE {columnName} = @UserId;";
+                        var updateSql = $"UPDATE pc_student.CarsHeaven_Users SET UserPassword = @NewPassword WHERE {columnName} = @UserId;";
                         var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
                         if (rowsAffected == 0)
                         {
-                            selectSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId AND UserPassword=@NewPassword;";
+                            selectSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId AND UserPassword=@NewPassword;";
                             data = ds.ExecuteSQLName(selectSql, para);
                             if (data[0].Count() == 0)
                             {

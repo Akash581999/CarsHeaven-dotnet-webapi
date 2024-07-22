@@ -26,7 +26,7 @@ namespace MyCommonStructure.Services
                     // new MySqlParameter("@UserPassword", req.addInfo["UserPassword"].ToString()),
                 };
 
-                var updateSql = @"UPDATE pc_student.TEDrones_Users 
+                var updateSql = @"UPDATE pc_student.CarsHeaven_Users 
                                 SET UserName = @UserName, Email = @Email, Phone = @Phone, Address = @Address, ProfilePic = @ProfilePic 
                                 WHERE UserId = @UserId";
                 var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
@@ -37,7 +37,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var selectSql = @"SELECT * FROM pc_student.TEDrones_Users WHERE UserId = @UserId";
+                    var selectSql = @"SELECT * FROM pc_student.CarsHeaven_Users WHERE UserId = @UserId";
                     var existingDataList = ds.ExecuteSQLName(selectSql, para);
                     if (existingDataList != null && existingDataList.Count > 0)
                     {
