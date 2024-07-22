@@ -6,10 +6,10 @@ using MySql.Data.MySqlClient;
 
 namespace MyCommonStructure.Services
 {
-    public class carts
+    public class wishlists
     {
         dbServices ds = new dbServices();
-        public async Task<responseData> AddToCart(requestData rData)
+        public async Task<responseData> AddToWishList(requestData rData)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -21,12 +21,12 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@DroneId", rData.addInfo["DroneId"])
                 };
 
-                var checkQuery = @"SELECT * FROM pc_student.TEDrones_Carts WHERE UserId=@UserId AND DroneId = @DroneId;";
+                var checkQuery = @"SELECT * FROM pc_student.TEDrones_Wishlists WHERE UserId=@UserId AND DroneId = @DroneId;";
                 var dbCheckData = ds.ExecuteSQLName(checkQuery, checkParams);
                 if (dbCheckData[0].Count() != 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone with this Id already exists in cart!";
+                    resData.rData["rMessage"] = "Drone with this Id already exists in Wishlist!";
                 }
                 else
                 {
@@ -38,7 +38,7 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@Price", rData.addInfo["Price"]),
                         new MySqlParameter("@TotalPrice", rData.addInfo["TotalPrice"]),
                     };
-                    var insertQuery = @"INSERT INTO pc_student.TEDrones_Carts (UserId, DroneId, Quantity, Price, TotalPrice) 
+                    var insertQuery = @"INSERT INTO pc_student.TEDrones_Wishlists (UserId, DroneId, Quantity, Price, TotalPrice) 
                                         VALUES (@UserId, @DroneId, @Quantity, @Price, @TotalPrice);";
                     int rowsAffected = ds.ExecuteInsertAndGetLastId(insertQuery, insertParams);
 
@@ -46,12 +46,12 @@ namespace MyCommonStructure.Services
                     {
                         resData.eventID = rData.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Drone added to cart successfully.";
+                        resData.rData["rMessage"] = "Drone added to Wishlist successfully.";
                     }
                     else
                     {
                         resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Failed to add drone to cart!";
+                        resData.rData["rMessage"] = "Failed to add drone to Wishlist!";
                     }
                 }
             }
@@ -64,7 +64,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> UpdateInCart(requestData rData)
+        public async Task<responseData> UpdateInWishList(requestData rData)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -72,43 +72,43 @@ namespace MyCommonStructure.Services
             {
                 MySqlParameter[] checkParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@CartId", rData.addInfo["CartId"]),
+                    new MySqlParameter("@WishlistId", rData.addInfo["WishlistId"]),
                     new MySqlParameter("@UserId", rData.addInfo["UserId"]),
                     new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
                 };
 
-                var query = @"SELECT * FROM pc_student.TEDrones_Carts WHERE CartId=@CartId AND UserId=@UserId AND DroneId=@DroneId";
+                var query = @"SELECT * FROM pc_student.TEDrones_Wishlists WHERE WishlistId=@WishlistId AND UserId=@UserId AND DroneId=@DroneId";
                 var dbData = ds.ExecuteSQLName(query, checkParams);
                 if (dbData[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone not found in cart!";
+                    resData.rData["rMessage"] = "Drone not found in Wishlist!";
                 }
                 else
                 {
                     MySqlParameter[] updateParams = new MySqlParameter[]
                    {
-                        new MySqlParameter("@CartId", rData.addInfo["CartId"]),
+                        new MySqlParameter("@WishlistId", rData.addInfo["WishlistId"]),
                         new MySqlParameter("@UserId", rData.addInfo["UserId"]),
                         new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
                         new MySqlParameter("@Quantity", rData.addInfo["Quantity"]),
                         new MySqlParameter("@Price", rData.addInfo["Price"]),
                         new MySqlParameter("@TotalPrice", rData.addInfo["TotalPrice"]),
                    };
-                    var updatequery = @"UPDATE pc_student.TEDrones_Carts
+                    var updatequery = @"UPDATE pc_student.TEDrones_Wishlists
                                         SET UserId = @UserId, DroneId = @DroneId, Quantity = @Quantity, Price = @Price, TotalPrice = @TotalPrice
-                                        WHERE CartId = @CartId;";
+                                        WHERE WishlistId = @WishlistId;";
                     var updatedata = ds.ExecuteInsertAndGetLastId(updatequery, updateParams);
                     if (updatedata != 0)
                     {
                         resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Some error occured, couldn't update cart products!";
+                        resData.rData["rMessage"] = "Some error occured, couldn't update Wishlist products!";
                     }
                     else
                     {
                         resData.eventID = rData.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Cart products updated successfully.";
+                        resData.rData["rMessage"] = "Wishlist products updated successfully.";
                     }
                 }
             }
@@ -121,52 +121,52 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> RemoveFromCart(requestData rData)
+        public async Task<responseData> RemoveFromWishList(requestData rData)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             try
             {
-                // int cartId = Convert.ToInt32(rData.addInfo["CartId"]);
+                // int WishlistId = Convert.ToInt32(rData.addInfo["WishlistId"]);
                 // int droneId = Convert.ToInt32(rData.addInfo["DroneId"]);
-                string CartId = rData.addInfo["CartId"].ToString();
+                string WishlistId = rData.addInfo["WishlistId"].ToString();
                 string UserId = rData.addInfo["UserId"].ToString();
                 string DroneId = rData.addInfo["DroneId"].ToString();
 
                 MySqlParameter[] para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@CartId", CartId),
+                    new MySqlParameter("@WishlistId", WishlistId),
                     new MySqlParameter("@UserId", UserId),
                     new MySqlParameter("@DroneId", DroneId)
                 };
 
-                var query = @"SELECT * FROM pc_student.TEDrones_Carts WHERE CartId = @CartId AND UserId=@UserId AND DroneId = @DroneId;";
+                var query = @"SELECT * FROM pc_student.TEDrones_Wishlists WHERE WishlistId = @WishlistId AND UserId=@UserId AND DroneId = @DroneId;";
                 var dbData = ds.ExecuteSQLName(query, para);
                 if (dbData.Count == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone not found in the cart!";
+                    resData.rData["rMessage"] = "Drone not found in the Wishlist!";
                 }
                 else
                 {
                     para = new MySqlParameter[]
                     {
-                        new MySqlParameter("@CartId", CartId),
+                        new MySqlParameter("@WishlistId", WishlistId),
                         new MySqlParameter("@UserId", UserId),
                         new MySqlParameter("@DroneId", DroneId)
                     };
 
-                    var deleteSql = @"DELETE FROM pc_student.TEDrones_Carts WHERE CartId = @CartId AND UserId=@UserId AND DroneId = @DroneId;";
+                    var deleteSql = @"DELETE FROM pc_student.TEDrones_Wishlists WHERE WishlistId = @WishlistId AND UserId=@UserId AND DroneId = @DroneId;";
                     int rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
                     if (rowsAffected > 0)
                     {
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Drone removed from cart successfully.";
+                        resData.rData["rMessage"] = "Drone removed from Wishlist successfully.";
                     }
                     else
                     {
                         resData.rData["rCode"] = 2;
-                        resData.rData["rMessage"] = "Failed to remove drone from cart!";
+                        resData.rData["rMessage"] = "Failed to remove drone from Wishlist!";
                     }
                 }
             }
@@ -179,7 +179,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> GetACartItem(requestData req)
+        public async Task<responseData> GetAWishListCar(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -187,62 +187,62 @@ namespace MyCommonStructure.Services
             resData.rData["rMessage"] = "Drone found successfully!";
             try
             {
-                string CartId = req.addInfo["CartId"].ToString();
+                string WishlistId = req.addInfo["WishlistId"].ToString();
                 string UserId = req.addInfo["UserId"].ToString();
                 string DroneId = req.addInfo["DroneId"].ToString();
 
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@CartId", req.addInfo["CartId"]),
+                    new MySqlParameter("@WishlistId", req.addInfo["WishlistId"]),
                     new MySqlParameter("@UserId", req.addInfo["UserId"]),
                     new MySqlParameter("@DroneId", req.addInfo["DroneId"])
                 };
 
-                string getsql = $"SELECT * FROM pc_student.TEDrones_Carts " +
-                             "WHERE CartId = @CartId AND UserId = @UserId AND DroneId = @DroneId;";
-                var cartdata = ds.ExecuteSQLName(getsql, myParams);
-                if (cartdata == null || cartdata.Count == 0 || cartdata[0].Count() == 0)
+                string getsql = $"SELECT * FROM pc_student.TEDrones_Wishlists " +
+                             "WHERE WishlistId = @WishlistId AND UserId = @UserId AND DroneId = @DroneId;";
+                var Wishlistdata = ds.ExecuteSQLName(getsql, myParams);
+                if (Wishlistdata == null || Wishlistdata.Count == 0 || Wishlistdata[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
                     resData.rData["rMessage"] = "Drone not found!";
                 }
                 else
                 {
-                    var cartData = cartdata[0][0];
-                    resData.rData["CartId"] = cartData["CartId"];
-                    resData.rData["UserId"] = cartData["UserId"];
-                    resData.rData["DroneId"] = cartData["DroneId"];
-                    resData.rData["Quantity"] = cartData["Quantity"];
-                    resData.rData["Price"] = cartData["Price"];
-                    resData.rData["TotalPrice"] = cartData["TotalPrice"];
+                    var WishlistData = Wishlistdata[0][0];
+                    resData.rData["WishlistId"] = WishlistData["WishlistId"];
+                    resData.rData["UserId"] = WishlistData["UserId"];
+                    resData.rData["DroneId"] = WishlistData["DroneId"];
+                    resData.rData["Quantity"] = WishlistData["Quantity"];
+                    resData.rData["Price"] = WishlistData["Price"];
+                    resData.rData["TotalPrice"] = WishlistData["TotalPrice"];
                 }
             }
             catch (Exception ex)
             {
                 resData.rStatus = 402;
                 resData.rData["rCode"] = 1;
-                resData.rData["rMessage"] = ex + "Enter correct Cartid or DroneId or UserId!";
+                resData.rData["rMessage"] = ex + "Enter correct Wishlistid or DroneId or UserId!";
             }
             return resData;
         }
 
-        public async Task<responseData> GetAllCartItems(requestData req)
+        public async Task<responseData> GetAllWishListCars(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             resData.eventID = req.eventID;
             try
             {
-                var query = @"SELECT * FROM pc_student.TEDrones_Carts ORDER BY CartId ASC";
+                var query = @"SELECT * FROM pc_student.TEDrones_Wishlists ORDER BY WishlistId ASC";
                 var dbData = ds.executeSQL(query, null);
                 if (dbData == null)
                 {
-                    resData.rData["rMessage"] = "Some error occurred, can't get all carts!";
+                    resData.rData["rMessage"] = "Some error occurred, can't get all Wishlists!";
                     resData.rStatus = 1;
                     return resData;
                 }
 
-                List<object> cartsList = new List<object>();
+                List<object> WishlistsList = new List<object>();
                 foreach (var rowSet in dbData)
                 {
                     if (rowSet != null)
@@ -260,23 +260,23 @@ namespace MyCommonStructure.Services
                                         rowData.Add(column.ToString());
                                     }
                                 }
-                                var cart = new
+                                var Wishlist = new
                                 {
-                                    CartId = rowData.ElementAtOrDefault(0),
+                                    WishlistId = rowData.ElementAtOrDefault(0),
                                     UserId = rowData.ElementAtOrDefault(1),
                                     DroneId = rowData.ElementAtOrDefault(2),
                                     Quantity = rowData.ElementAtOrDefault(3),
                                     Price = rowData.ElementAtOrDefault(4),
                                     TotalPrice = rowData.ElementAtOrDefault(5)
                                 };
-                                cartsList.Add(cart);
+                                WishlistsList.Add(Wishlist);
                             }
                         }
                     }
                 }
                 resData.rData["rCode"] = 0;
-                resData.rData["rMessage"] = "All carts found successfully";
-                resData.rData["carts"] = cartsList;
+                resData.rData["rMessage"] = "All Wishlists found successfully";
+                resData.rData["Wishlists"] = WishlistsList;
             }
             catch (Exception ex)
             {

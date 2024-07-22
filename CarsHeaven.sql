@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Cars (
 	LocationId INT,
     FOREIGN KEY (LocationId) REFERENCES CarsHeaven_Locations(LocationId)
 );
-DROP TABLE IF EXISTS pc_student.CarsHeaven_Cars;
+ALTER TABLE pc_student.CarsHeaven_Cars ADD COLUMN BrandName VARCHAR(255) NOT NULL AFTER CarId;
 SELECT * FROM pc_student.CarsHeaven_Cars;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Users (

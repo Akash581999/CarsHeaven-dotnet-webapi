@@ -15,8 +15,8 @@ ConfigureServices(s =>
     s.AddSingleton<editProfile>();
     s.AddSingleton<deleteProfile>();
     s.AddSingleton<feedbacks>();
-    s.AddSingleton<drones>();
-    s.AddSingleton<carts>();
+    s.AddSingleton<cars>();
+    s.AddSingleton<wishlists>();
     s.AddSingleton<users>();
 
     s.AddCors();
@@ -107,28 +107,28 @@ ConfigureServices(s =>
         });
 
 
-        var drones = e.ServiceProvider.GetRequiredService<drones>();
-        e.MapPost("/drones", [AllowAnonymous] async (HttpContext http) => // for drone details
+        var cars = e.ServiceProvider.GetRequiredService<cars>();
+        e.MapPost("/cars", [AllowAnonymous] async (HttpContext http) => // for cars details
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await drones.AddDrone(rData));
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await drones.EditDrone(rData));
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await drones.DeleteDrone(rData));
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await drones.GetDrone(rData));
-            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await drones.GetAllDrones(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await cars.AddCar(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await cars.EditCar(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await cars.DeleteCar(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await cars.GetCar(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await cars.GetAllCars(rData));
         });
 
-        var carts = e.ServiceProvider.GetRequiredService<carts>();
-        e.MapPost("/carts", [AllowAnonymous] async (HttpContext http) => // for cart details
+        var wishlists = e.ServiceProvider.GetRequiredService<wishlists>();
+        e.MapPost("/wishlists", [AllowAnonymous] async (HttpContext http) => // for wishlists details
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await carts.AddToCart(rData));
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await carts.UpdateInCart(rData));
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await carts.RemoveFromCart(rData));
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await carts.GetACartItem(rData));
-            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await carts.GetAllCartItems(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await wishlists.AddToWishList(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await wishlists.UpdateInWishList(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await wishlists.RemoveFromWishList(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await wishlists.GetAWishListCar(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await wishlists.GetAllWishListCars(rData));
         });
 
         var users = e.ServiceProvider.GetRequiredService<users>();
@@ -142,7 +142,7 @@ ConfigureServices(s =>
         });
 
         e.MapGet("/bing",
-          async c => await c.Response.WriteAsJsonAsync("{'Name':'Gourav','Age':'22','Project':'TEDrones'}"));
+          async c => await c.Response.WriteAsJsonAsync("{'Name':'Akash','Age':'25','Project':'CarsHeaven'}"));
     });
 }).Build().Run();
 
