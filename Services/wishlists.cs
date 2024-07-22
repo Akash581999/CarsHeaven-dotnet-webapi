@@ -15,43 +15,46 @@ namespace MyCommonStructure.Services
             resData.rData["rCode"] = 0;
             try
             {
+                if (!rData.addInfo.ContainsKey("UserId") || !rData.addInfo.ContainsKey("CarId"))
+                {
+                    resData.rData["rCode"] = 4;
+                    resData.rData["rMessage"] = "Invalid input parameters!";
+                    return resData;
+                }
+
                 MySqlParameter[] checkParams = new MySqlParameter[]
                 {
                     new MySqlParameter("@UserId", rData.addInfo["UserId"]),
-                    new MySqlParameter("@DroneId", rData.addInfo["DroneId"])
+                    new MySqlParameter("@CarId", rData.addInfo["CarId"])
                 };
 
-                var checkQuery = @"SELECT * FROM pc_student.TEDrones_Wishlists WHERE UserId=@UserId AND DroneId = @DroneId;";
-                var dbCheckData = ds.ExecuteSQLName(checkQuery, checkParams);
-                if (dbCheckData[0].Count() != 0)
+                var checkQuery = @"SELECT COUNT(*) FROM pc_student.CarsHeaven_Wishlist WHERE UserId=@UserId AND CarId = @CarId;";
+                var dbCheckData = await ds.ExecuteSQLAsync(checkQuery, checkParams);
+                if (dbCheckData.Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone with this Id already exists in Wishlist!";
+                    resData.rData["rMessage"] = "Car with this Id already exists in wishlist!";
                 }
                 else
                 {
                     MySqlParameter[] insertParams = new MySqlParameter[]
                     {
                         new MySqlParameter("@UserId", rData.addInfo["UserId"]),
-                        new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
-                        new MySqlParameter("@Quantity", rData.addInfo["Quantity"]),
-                        new MySqlParameter("@Price", rData.addInfo["Price"]),
-                        new MySqlParameter("@TotalPrice", rData.addInfo["TotalPrice"]),
+                        new MySqlParameter("@CarId", rData.addInfo["CarId"]),
                     };
-                    var insertQuery = @"INSERT INTO pc_student.TEDrones_Wishlists (UserId, DroneId, Quantity, Price, TotalPrice) 
-                                        VALUES (@UserId, @DroneId, @Quantity, @Price, @TotalPrice);";
-                    int rowsAffected = ds.ExecuteInsertAndGetLastId(insertQuery, insertParams);
 
-                    if (rowsAffected > 0)
+                    var insertQuery = @"INSERT INTO pc_student.CarsHeaven_Wishlist (UserId, CarId) VALUES (@UserId, @CarId);";
+                    var rowsAffected = await ds.ExecuteSQLAsync(insertQuery, insertParams);
+                    if (rowsAffected.Count() == 0)
                     {
                         resData.eventID = rData.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Drone added to Wishlist successfully.";
+                        resData.rData["rMessage"] = "Car added to wishlist successfully.";
                     }
                     else
                     {
                         resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Failed to add drone to Wishlist!";
+                        resData.rData["rMessage"] = "Failed to add car into wishlist!";
                     }
                 }
             }
@@ -74,15 +77,15 @@ namespace MyCommonStructure.Services
                 {
                     new MySqlParameter("@WishlistId", rData.addInfo["WishlistId"]),
                     new MySqlParameter("@UserId", rData.addInfo["UserId"]),
-                    new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
+                    new MySqlParameter("@CarId", rData.addInfo["CarId"]),
                 };
 
-                var query = @"SELECT * FROM pc_student.TEDrones_Wishlists WHERE WishlistId=@WishlistId AND UserId=@UserId AND DroneId=@DroneId";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId=@WishlistId AND UserId=@UserId AND CarId=@CarId";
                 var dbData = ds.ExecuteSQLName(query, checkParams);
                 if (dbData[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone not found in Wishlist!";
+                    resData.rData["rMessage"] = "Car not found in wishlist!";
                 }
                 else
                 {
@@ -90,25 +93,20 @@ namespace MyCommonStructure.Services
                    {
                         new MySqlParameter("@WishlistId", rData.addInfo["WishlistId"]),
                         new MySqlParameter("@UserId", rData.addInfo["UserId"]),
-                        new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
-                        new MySqlParameter("@Quantity", rData.addInfo["Quantity"]),
-                        new MySqlParameter("@Price", rData.addInfo["Price"]),
-                        new MySqlParameter("@TotalPrice", rData.addInfo["TotalPrice"]),
+                        new MySqlParameter("@CarId", rData.addInfo["CarId"]),
                    };
-                    var updatequery = @"UPDATE pc_student.TEDrones_Wishlists
-                                        SET UserId = @UserId, DroneId = @DroneId, Quantity = @Quantity, Price = @Price, TotalPrice = @TotalPrice
-                                        WHERE WishlistId = @WishlistId;";
+                    var updatequery = @"UPDATE pc_student.CarsHeaven_Wishlist SET CarId = @CarId WHERE UserId = @UserId AND WishlistId = @WishlistId;";
                     var updatedata = ds.ExecuteInsertAndGetLastId(updatequery, updateParams);
                     if (updatedata != 0)
                     {
                         resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Some error occured, couldn't update Wishlist products!";
+                        resData.rData["rMessage"] = "Some error occured, failed to update wishlist!";
                     }
                     else
                     {
                         resData.eventID = rData.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Wishlist products updated successfully.";
+                        resData.rData["rMessage"] = "Wishlist updated successfully.";
                     }
                 }
             }
@@ -127,25 +125,23 @@ namespace MyCommonStructure.Services
             resData.rData["rCode"] = 0;
             try
             {
-                // int WishlistId = Convert.ToInt32(rData.addInfo["WishlistId"]);
-                // int droneId = Convert.ToInt32(rData.addInfo["DroneId"]);
                 string WishlistId = rData.addInfo["WishlistId"].ToString();
                 string UserId = rData.addInfo["UserId"].ToString();
-                string DroneId = rData.addInfo["DroneId"].ToString();
+                string CarId = rData.addInfo["CarId"].ToString();
 
                 MySqlParameter[] para = new MySqlParameter[]
                 {
                     new MySqlParameter("@WishlistId", WishlistId),
                     new MySqlParameter("@UserId", UserId),
-                    new MySqlParameter("@DroneId", DroneId)
+                    new MySqlParameter("@CarId", CarId)
                 };
 
-                var query = @"SELECT * FROM pc_student.TEDrones_Wishlists WHERE WishlistId = @WishlistId AND UserId=@UserId AND DroneId = @DroneId;";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId = @WishlistId AND UserId=@UserId AND CarId = @CarId;";
                 var dbData = ds.ExecuteSQLName(query, para);
                 if (dbData.Count == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone not found in the Wishlist!";
+                    resData.rData["rMessage"] = "Car not found in the wishlist!";
                 }
                 else
                 {
@@ -153,20 +149,20 @@ namespace MyCommonStructure.Services
                     {
                         new MySqlParameter("@WishlistId", WishlistId),
                         new MySqlParameter("@UserId", UserId),
-                        new MySqlParameter("@DroneId", DroneId)
+                        new MySqlParameter("@CarId", CarId)
                     };
 
-                    var deleteSql = @"DELETE FROM pc_student.TEDrones_Wishlists WHERE WishlistId = @WishlistId AND UserId=@UserId AND DroneId = @DroneId;";
+                    var deleteSql = @"DELETE FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId = @WishlistId AND UserId = @UserId AND CarId = @CarId;";
                     int rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
                     if (rowsAffected > 0)
                     {
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Drone removed from Wishlist successfully.";
+                        resData.rData["rMessage"] = "Car removed from wishlist successfully.";
                     }
                     else
                     {
                         resData.rData["rCode"] = 2;
-                        resData.rData["rMessage"] = "Failed to remove drone from Wishlist!";
+                        resData.rData["rMessage"] = "Failed to remove car from wishlist!";
                     }
                 }
             }
@@ -184,44 +180,42 @@ namespace MyCommonStructure.Services
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             resData.eventID = req.eventID;
-            resData.rData["rMessage"] = "Drone found successfully!";
+            resData.rData["rMessage"] = "Car found successfully!";
             try
             {
                 string WishlistId = req.addInfo["WishlistId"].ToString();
                 string UserId = req.addInfo["UserId"].ToString();
-                string DroneId = req.addInfo["DroneId"].ToString();
+                string CarId = req.addInfo["CarId"].ToString();
 
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
                     new MySqlParameter("@WishlistId", req.addInfo["WishlistId"]),
                     new MySqlParameter("@UserId", req.addInfo["UserId"]),
-                    new MySqlParameter("@DroneId", req.addInfo["DroneId"])
+                    new MySqlParameter("@CarId", req.addInfo["CarId"])
                 };
 
-                string getsql = $"SELECT * FROM pc_student.TEDrones_Wishlists " +
-                             "WHERE WishlistId = @WishlistId AND UserId = @UserId AND DroneId = @DroneId;";
+                string getsql = $"SELECT * FROM pc_student.CarsHeaven_Wishlist " +
+                             "WHERE WishlistId = @WishlistId AND UserId = @UserId AND CarId = @CarId;";
                 var Wishlistdata = ds.ExecuteSQLName(getsql, myParams);
                 if (Wishlistdata == null || Wishlistdata.Count == 0 || Wishlistdata[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Drone not found!";
+                    resData.rData["rMessage"] = "Car not found!";
                 }
                 else
                 {
                     var WishlistData = Wishlistdata[0][0];
                     resData.rData["WishlistId"] = WishlistData["WishlistId"];
                     resData.rData["UserId"] = WishlistData["UserId"];
-                    resData.rData["DroneId"] = WishlistData["DroneId"];
-                    resData.rData["Quantity"] = WishlistData["Quantity"];
-                    resData.rData["Price"] = WishlistData["Price"];
-                    resData.rData["TotalPrice"] = WishlistData["TotalPrice"];
+                    resData.rData["CarId"] = WishlistData["CarId"];
+                    resData.rData["DateAdded"] = WishlistData["DateAdded"];
                 }
             }
             catch (Exception ex)
             {
                 resData.rStatus = 402;
                 resData.rData["rCode"] = 1;
-                resData.rData["rMessage"] = ex + "Enter correct Wishlistid or DroneId or UserId!";
+                resData.rData["rMessage"] = ex + "Enter correct wishlist details!";
             }
             return resData;
         }
@@ -233,11 +227,11 @@ namespace MyCommonStructure.Services
             resData.eventID = req.eventID;
             try
             {
-                var query = @"SELECT * FROM pc_student.TEDrones_Wishlists ORDER BY WishlistId ASC";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist ORDER BY WishlistId ASC";
                 var dbData = ds.executeSQL(query, null);
                 if (dbData == null)
                 {
-                    resData.rData["rMessage"] = "Some error occurred, can't get all Wishlists!";
+                    resData.rData["rMessage"] = "Some error occurred, can't get wishlist cars!";
                     resData.rStatus = 1;
                     return resData;
                 }
@@ -264,7 +258,7 @@ namespace MyCommonStructure.Services
                                 {
                                     WishlistId = rowData.ElementAtOrDefault(0),
                                     UserId = rowData.ElementAtOrDefault(1),
-                                    DroneId = rowData.ElementAtOrDefault(2),
+                                    CarId = rowData.ElementAtOrDefault(2),
                                     Quantity = rowData.ElementAtOrDefault(3),
                                     Price = rowData.ElementAtOrDefault(4),
                                     TotalPrice = rowData.ElementAtOrDefault(5)
@@ -275,7 +269,7 @@ namespace MyCommonStructure.Services
                     }
                 }
                 resData.rData["rCode"] = 0;
-                resData.rData["rMessage"] = "All Wishlists found successfully";
+                resData.rData["rMessage"] = "All cars found in wishlist successfully";
                 resData.rData["Wishlists"] = WishlistsList;
             }
             catch (Exception ex)

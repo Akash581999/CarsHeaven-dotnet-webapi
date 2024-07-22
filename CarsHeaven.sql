@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Cars (
     FOREIGN KEY (LocationId) REFERENCES CarsHeaven_Locations(LocationId)
 );
 ALTER TABLE pc_student.CarsHeaven_Cars ADD COLUMN BrandName VARCHAR(255) NOT NULL AFTER CarId;
+TRUNCATE TABLE pc_student.CarsHeaven_Cars;
 SELECT * FROM pc_student.CarsHeaven_Cars;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Users (
@@ -38,6 +39,21 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Users (
     UNIQUE (Phone)
 );
 SELECT * FROM pc_student.CarsHeaven_Users;
+
+CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Wishlist (
+    WishlistId INT AUTO_INCREMENT PRIMARY KEY,
+    UserId INT NOT NULL,
+    CarId INT NOT NULL,
+    DateAdded TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserId) REFERENCES CarsHeaven_Users(UserId),
+    FOREIGN KEY (CarId) REFERENCES CarsHeaven_Cars(CarId)
+);
+INSERT INTO pc_student.CarsHeaven_Wishlist (UserId, CarId) VALUES (1, 2);
+SELECT wl.WishlistId,u.UserId,u.UserName,u.Email,u.Phone,c.CarId,c.BrandName,c.CarName,c.CarType,c.Seats,c.RentRate,c.CarPic,wl.DateAdded
+FROM pc_student.CarsHeaven_Wishlist wl
+JOIN pc_student.CarsHeaven_Users u ON wl.UserId = u.UserId
+JOIN pc_student.CarsHeaven_Cars c ON wl.CarId = c.CarId;
+SELECT * FROM pc_student.CarsHeaven_Wishlist;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Rentals (
     RentalId INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,6 +88,7 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Locations (
     State VARCHAR(255),
     ZipCode VARCHAR(10)
 );
+TRUNCATE TABLE pc_student.CarsHeaven_Locations;
 SELECT * FROM pc_student.CarsHeaven_Locations;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Drivers (
