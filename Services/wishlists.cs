@@ -15,22 +15,15 @@ namespace MyCommonStructure.Services
             resData.rData["rCode"] = 0;
             try
             {
-                if (!rData.addInfo.ContainsKey("UserId") || !rData.addInfo.ContainsKey("CarId"))
-                {
-                    resData.rData["rCode"] = 4;
-                    resData.rData["rMessage"] = "Invalid input parameters!";
-                    return resData;
-                }
-
                 MySqlParameter[] checkParams = new MySqlParameter[]
                 {
                     new MySqlParameter("@UserId", rData.addInfo["UserId"]),
                     new MySqlParameter("@CarId", rData.addInfo["CarId"])
                 };
 
-                var checkQuery = @"SELECT COUNT(*) FROM pc_student.CarsHeaven_Wishlist WHERE UserId=@UserId AND CarId = @CarId;";
+                var checkQuery = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE UserId=@UserId AND CarId = @CarId;";
                 var dbCheckData = await ds.ExecuteSQLAsync(checkQuery, checkParams);
-                if (dbCheckData.Count() == 0)
+                if (dbCheckData.Count() != 0)
                 {
                     resData.rData["rCode"] = 2;
                     resData.rData["rMessage"] = "Car with this Id already exists in wishlist!";
@@ -76,16 +69,14 @@ namespace MyCommonStructure.Services
                 MySqlParameter[] checkParams = new MySqlParameter[]
                 {
                     new MySqlParameter("@WishlistId", rData.addInfo["WishlistId"]),
-                    new MySqlParameter("@UserId", rData.addInfo["UserId"]),
-                    new MySqlParameter("@CarId", rData.addInfo["CarId"]),
                 };
 
-                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId=@WishlistId AND UserId=@UserId AND CarId=@CarId";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId=@WishlistId;";
                 var dbData = ds.ExecuteSQLName(query, checkParams);
                 if (dbData[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Car not found in wishlist!";
+                    resData.rData["rMessage"] = "User wishlist not found!";
                 }
                 else
                 {
@@ -126,17 +117,17 @@ namespace MyCommonStructure.Services
             try
             {
                 string WishlistId = rData.addInfo["WishlistId"].ToString();
-                string UserId = rData.addInfo["UserId"].ToString();
-                string CarId = rData.addInfo["CarId"].ToString();
+                // string UserId = rData.addInfo["UserId"].ToString();
+                // string CarId = rData.addInfo["CarId"].ToString();
 
                 MySqlParameter[] para = new MySqlParameter[]
                 {
                     new MySqlParameter("@WishlistId", WishlistId),
-                    new MySqlParameter("@UserId", UserId),
-                    new MySqlParameter("@CarId", CarId)
+                    // new MySqlParameter("@UserId", UserId),
+                    // new MySqlParameter("@CarId", CarId)
                 };
 
-                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId = @WishlistId AND UserId=@UserId AND CarId = @CarId;";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId = @WishlistId;";
                 var dbData = ds.ExecuteSQLName(query, para);
                 if (dbData.Count == 0)
                 {
@@ -147,22 +138,22 @@ namespace MyCommonStructure.Services
                 {
                     para = new MySqlParameter[]
                     {
-                        new MySqlParameter("@WishlistId", WishlistId),
-                        new MySqlParameter("@UserId", UserId),
-                        new MySqlParameter("@CarId", CarId)
+                        new MySqlParameter("@WishlistId", rData.addInfo["WishlistId"]),
+                        new MySqlParameter("@UserId", rData.addInfo["UserId"]),
+                        new MySqlParameter("@CarId", rData.addInfo["CarId"]),
                     };
 
                     var deleteSql = @"DELETE FROM pc_student.CarsHeaven_Wishlist WHERE WishlistId = @WishlistId AND UserId = @UserId AND CarId = @CarId;";
                     int rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
-                    if (rowsAffected > 0)
+                    if (rowsAffected != null)
                     {
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Car removed from wishlist successfully.";
+                        resData.rData["rMessage"] = "Wishlist deleted successfully.";
                     }
                     else
                     {
                         resData.rData["rCode"] = 2;
-                        resData.rData["rMessage"] = "Failed to remove car from wishlist!";
+                        resData.rData["rMessage"] = "Failed to deleted wishlist!";
                     }
                 }
             }
@@ -180,27 +171,27 @@ namespace MyCommonStructure.Services
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             resData.eventID = req.eventID;
-            resData.rData["rMessage"] = "Car found successfully!";
+            resData.rData["rMessage"] = "Wishlist found successfully!";
             try
             {
                 string WishlistId = req.addInfo["WishlistId"].ToString();
-                string UserId = req.addInfo["UserId"].ToString();
-                string CarId = req.addInfo["CarId"].ToString();
+                // string UserId = req.addInfo["UserId"].ToString();
+                // string CarId = req.addInfo["CarId"].ToString();
 
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
                     new MySqlParameter("@WishlistId", req.addInfo["WishlistId"]),
-                    new MySqlParameter("@UserId", req.addInfo["UserId"]),
-                    new MySqlParameter("@CarId", req.addInfo["CarId"])
+                    // new MySqlParameter("@UserId", req.addInfo["UserId"]),
+                    // new MySqlParameter("@CarId", req.addInfo["CarId"])
                 };
 
                 string getsql = $"SELECT * FROM pc_student.CarsHeaven_Wishlist " +
-                             "WHERE WishlistId = @WishlistId AND UserId = @UserId AND CarId = @CarId;";
+                             "WHERE WishlistId = @WishlistId;";
                 var Wishlistdata = ds.ExecuteSQLName(getsql, myParams);
                 if (Wishlistdata == null || Wishlistdata.Count == 0 || Wishlistdata[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Car not found!";
+                    resData.rData["rMessage"] = "Wishlist not found!";
                 }
                 else
                 {
@@ -259,9 +250,7 @@ namespace MyCommonStructure.Services
                                     WishlistId = rowData.ElementAtOrDefault(0),
                                     UserId = rowData.ElementAtOrDefault(1),
                                     CarId = rowData.ElementAtOrDefault(2),
-                                    Quantity = rowData.ElementAtOrDefault(3),
-                                    Price = rowData.ElementAtOrDefault(4),
-                                    TotalPrice = rowData.ElementAtOrDefault(5)
+                                    DateAdded = rowData.ElementAtOrDefault(3),
                                 };
                                 WishlistsList.Add(Wishlist);
                             }

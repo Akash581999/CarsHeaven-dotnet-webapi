@@ -15,12 +15,12 @@ namespace MyCommonStructure.Services
             resData.rData["rCode"] = 0;
             try
             {
-                if (!rData.addInfo.ContainsKey("UserId") || !rData.addInfo.ContainsKey("CarId"))
-                {
-                    resData.rData["rCode"] = 4;
-                    resData.rData["rMessage"] = "Invalid input parameters!";
-                    return resData;
-                }
+                // if (!rData.addInfo.ContainsKey("UserId") || !rData.addInfo.ContainsKey("CarId"))
+                // {
+                //     resData.rData["rCode"] = 4;
+                //     resData.rData["rMessage"] = "Invalid input parameters!";
+                //     return resData;
+                // }
 
                 MySqlParameter[] checkParams = new MySqlParameter[]
                 {
@@ -28,33 +28,38 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@CarId", rData.addInfo["CarId"])
                 };
 
-                var checkQuery = @"SELECT COUNT(*) FROM pc_student.CarsHeaven_Order WHERE UserId=@UserId AND CarId = @CarId;";
+                var checkQuery = $"SELECT * FROM pc_student.CarsHeaven_Rentals WHERE UserId=@UserId AND CarId = @CarId;";
                 var dbCheckData = await ds.ExecuteSQLAsync(checkQuery, checkParams);
-                if (dbCheckData.Count() == 0)
+                if (dbCheckData.Count() != 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Car with this Id already exists in Order!";
+                    resData.rData["rMessage"] = "Order already active!";
                 }
                 else
                 {
                     MySqlParameter[] insertParams = new MySqlParameter[]
                     {
-                        new MySqlParameter("@UserId", rData.addInfo["UserId"]),
                         new MySqlParameter("@CarId", rData.addInfo["CarId"]),
+                        new MySqlParameter("@UserId", rData.addInfo["UserId"]),
+                        new MySqlParameter("@RentalStart", rData.addInfo["RentalStart"]),
+                        new MySqlParameter("@RentalEnd", rData.addInfo["RentalEnd"]),
+                        new MySqlParameter("@TotalPrice", rData.addInfo["TotalPrice"]),
+                        new MySqlParameter("@PaymentStatus", rData.addInfo["PaymentStatus"]),
+                        new MySqlParameter("@DriverId", rData.addInfo["DriverId"]),
                     };
 
-                    var insertQuery = @"INSERT INTO pc_student.CarsHeaven_Order (UserId, CarId) VALUES (@UserId, @CarId);";
+                    var insertQuery = @"INSERT INTO pc_student.CarsHeaven_Rentals (CarId,UserId,RentalStart,RentalEnd,TotalPrice,PaymentStatus,DriverId) VALUES (@CarId,@UserId,@RentalStart,@RentalEnd,@TotalPrice,@PaymentStatus,@DriverId);";
                     var rowsAffected = await ds.ExecuteSQLAsync(insertQuery, insertParams);
                     if (rowsAffected.Count() == 0)
                     {
                         resData.eventID = rData.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Car added to Order successfully.";
+                        resData.rData["rMessage"] = "Order created successfully.";
                     }
                     else
                     {
                         resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Failed to add car into Order!";
+                        resData.rData["rMessage"] = "Failed to place order!";
                     }
                 }
             }
@@ -75,27 +80,33 @@ namespace MyCommonStructure.Services
             {
                 MySqlParameter[] checkParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@OrderId", rData.addInfo["OrderId"]),
+                    new MySqlParameter("@RentalId", rData.addInfo["RentalId"]),
                     new MySqlParameter("@UserId", rData.addInfo["UserId"]),
-                    new MySqlParameter("@CarId", rData.addInfo["CarId"]),
+                    // new MySqlParameter("@CarId", rData.addInfo["CarId"]),
                 };
 
-                var query = @"SELECT * FROM pc_student.CarsHeaven_Order WHERE OrderId=@OrderId AND UserId=@UserId AND CarId=@CarId";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Rentals WHERE RentalId=@RentalId AND UserId=@UserId";
                 var dbData = ds.ExecuteSQLName(query, checkParams);
                 if (dbData[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Car not found in Order!";
+                    resData.rData["rMessage"] = "User orders not found!";
                 }
                 else
                 {
                     MySqlParameter[] updateParams = new MySqlParameter[]
-                   {
-                        new MySqlParameter("@OrderId", rData.addInfo["OrderId"]),
+                    {
+                        new MySqlParameter("@RentalId", rData.addInfo["RentalId"]),
                         new MySqlParameter("@UserId", rData.addInfo["UserId"]),
                         new MySqlParameter("@CarId", rData.addInfo["CarId"]),
-                   };
-                    var updatequery = @"UPDATE pc_student.CarsHeaven_Order SET CarId = @CarId WHERE UserId = @UserId AND OrderId = @OrderId;";
+                        new MySqlParameter("@RentalStart", rData.addInfo["RentalStart"]),
+                        new MySqlParameter("@RentalEnd", rData.addInfo["RentalEnd"]),
+                        new MySqlParameter("@TotalPrice", rData.addInfo["TotalPrice"]),
+                        new MySqlParameter("@PaymentStatus", rData.addInfo["PaymentStatus"]),
+                        new MySqlParameter("@DriverId", rData.addInfo["DriverId"]),
+                    };
+                    var updatequery = @"UPDATE pc_student.CarsHeaven_Rentals SET CarId = @CarId, RentalStart=@RentalStart, RentalEnd=@RentalEnd, TotalPrice=@TotalPrice, PaymentStatus=@PaymentStatus, DriverId=@DriverId  
+                                        WHERE RentalId = @RentalId AND UserId = @UserId;";
                     var updatedata = ds.ExecuteInsertAndGetLastId(updatequery, updateParams);
                     if (updatedata != 0)
                     {
@@ -119,50 +130,43 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> DeleteOrder(requestData rData)
+        public async Task<responseData> DeleteOrder(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             try
             {
-                string OrderId = rData.addInfo["OrderId"].ToString();
-                string UserId = rData.addInfo["UserId"].ToString();
-                string CarId = rData.addInfo["CarId"].ToString();
+                string RentalId = req.addInfo["RentalId"].ToString();
+
 
                 MySqlParameter[] para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@OrderId", OrderId),
-                    new MySqlParameter("@UserId", UserId),
-                    new MySqlParameter("@CarId", CarId)
+                    new MySqlParameter("@RentalId", RentalId),
+                    // new MySqlParameter("@UserName", req.addInfo["UserName"].ToString()),
                 };
 
-                var query = @"SELECT * FROM pc_student.CarsHeaven_Order WHERE OrderId = @OrderId AND UserId=@UserId AND CarId = @CarId;";
-                var dbData = ds.ExecuteSQLName(query, para);
-                if (dbData.Count == 0)
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Rentals WHERE RentalId = @RentalId;";
+                var checkResult = ds.executeSQL(checkSql, para);
+
+                if (checkResult[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Car not found in the Order!";
+                    resData.rData["rMessage"] = "Order not found, Not deleted!";
                 }
                 else
                 {
-                    para = new MySqlParameter[]
+                    var deleteSql = $"DELETE FROM pc_student.CarsHeaven_Rentals WHERE RentalId = @RentalId;";
+                    var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
+                    if (rowsAffected == null)
                     {
-                        new MySqlParameter("@OrderId", OrderId),
-                        new MySqlParameter("@UserId", UserId),
-                        new MySqlParameter("@CarId", CarId)
-                    };
-
-                    var deleteSql = @"DELETE FROM pc_student.CarsHeaven_Order WHERE OrderId = @OrderId AND UserId = @UserId AND CarId = @CarId;";
-                    int rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
-                    if (rowsAffected > 0)
-                    {
-                        resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Car removed from Order successfully.";
+                        resData.rData["rCode"] = 3;
+                        resData.rData["rMessage"] = "Failed to delete, Wrong order id!";
                     }
                     else
                     {
-                        resData.rData["rCode"] = 2;
-                        resData.rData["rMessage"] = "Failed to remove car from Order!";
+                        resData.eventID = req.eventID;
+                        resData.rData["rCode"] = 0;
+                        resData.rData["rMessage"] = "Order deleted successfully";
                     }
                 }
             }
@@ -180,35 +184,39 @@ namespace MyCommonStructure.Services
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
             resData.eventID = req.eventID;
-            resData.rData["rMessage"] = "Car found successfully!";
+            resData.rData["rMessage"] = "Car order found successfully!";
             try
             {
-                string OrderId = req.addInfo["OrderId"].ToString();
-                string UserId = req.addInfo["UserId"].ToString();
-                string CarId = req.addInfo["CarId"].ToString();
+                string RentalId = req.addInfo["RentalId"].ToString();
+                // string CarId = req.addInfo["CarId"].ToString();
+                // string UserId = req.addInfo["UserId"].ToString();
 
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@OrderId", req.addInfo["OrderId"]),
-                    new MySqlParameter("@UserId", req.addInfo["UserId"]),
-                    new MySqlParameter("@CarId", req.addInfo["CarId"])
+                    new MySqlParameter("@RentalId", req.addInfo["RentalId"]),
+                    // new MySqlParameter("@CarId", req.addInfo["CarId"]),
+                    // new MySqlParameter("@UserId", req.addInfo["UserId"]),
                 };
 
-                string getsql = $"SELECT * FROM pc_student.CarsHeaven_Order " +
-                             "WHERE OrderId = @OrderId AND UserId = @UserId AND CarId = @CarId;";
+                string getsql = $"SELECT * FROM pc_student.CarsHeaven_Rentals " +
+                             "WHERE RentalId = @RentalId;";
                 var Orderdata = ds.ExecuteSQLName(getsql, myParams);
                 if (Orderdata == null || Orderdata.Count == 0 || Orderdata[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Car not found!";
+                    resData.rData["rMessage"] = "Car order not found!";
                 }
                 else
                 {
                     var OrderData = Orderdata[0][0];
-                    resData.rData["OrderId"] = OrderData["OrderId"];
-                    resData.rData["UserId"] = OrderData["UserId"];
+                    resData.rData["RentalId"] = OrderData["RentalId"];
                     resData.rData["CarId"] = OrderData["CarId"];
-                    resData.rData["DateAdded"] = OrderData["DateAdded"];
+                    resData.rData["UserId"] = OrderData["UserId"];
+                    resData.rData["RentalStart"] = OrderData["RentalStart"];
+                    resData.rData["RentalEnd"] = OrderData["RentalEnd"];
+                    resData.rData["TotalPrice"] = OrderData["TotalPrice"];
+                    resData.rData["PaymentStatus"] = OrderData["PaymentStatus"];
+                    resData.rData["DriverId"] = OrderData["DriverId"];
                 }
             }
             catch (Exception ex)
@@ -227,11 +235,11 @@ namespace MyCommonStructure.Services
             resData.eventID = req.eventID;
             try
             {
-                var query = @"SELECT * FROM pc_student.CarsHeaven_Order ORDER BY OrderId ASC";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Rentals ORDER BY RentalId ASC";
                 var dbData = ds.executeSQL(query, null);
                 if (dbData == null)
                 {
-                    resData.rData["rMessage"] = "Some error occurred, can't get Order cars!";
+                    resData.rData["rMessage"] = "Some error occurred, can't get Ordered cars!";
                     resData.rStatus = 1;
                     return resData;
                 }
@@ -256,12 +264,14 @@ namespace MyCommonStructure.Services
                                 }
                                 var Order = new
                                 {
-                                    OrderId = rowData.ElementAtOrDefault(0),
-                                    UserId = rowData.ElementAtOrDefault(1),
-                                    CarId = rowData.ElementAtOrDefault(2),
-                                    Quantity = rowData.ElementAtOrDefault(3),
-                                    Price = rowData.ElementAtOrDefault(4),
-                                    TotalPrice = rowData.ElementAtOrDefault(5)
+                                    RentalId = rowData.ElementAtOrDefault(0),
+                                    CarId = rowData.ElementAtOrDefault(1),
+                                    UserId = rowData.ElementAtOrDefault(2),
+                                    RentalStart = rowData.ElementAtOrDefault(3),
+                                    RentalEnd = rowData.ElementAtOrDefault(4),
+                                    TotalPrice = rowData.ElementAtOrDefault(5),
+                                    PaymentStatus = rowData.ElementAtOrDefault(6),
+                                    DriverId = rowData.ElementAtOrDefault(7)
                                 };
                                 OrdersList.Add(Order);
                             }
@@ -269,7 +279,7 @@ namespace MyCommonStructure.Services
                     }
                 }
                 resData.rData["rCode"] = 0;
-                resData.rData["rMessage"] = "All cars found in Order successfully";
+                resData.rData["rMessage"] = "All car orders successfully";
                 resData.rData["Orders"] = OrdersList;
             }
             catch (Exception ex)

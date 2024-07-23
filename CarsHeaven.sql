@@ -40,6 +40,23 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Users (
 );
 SELECT * FROM pc_student.CarsHeaven_Users;
 
+CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Rentals (
+    RentalId INT AUTO_INCREMENT PRIMARY KEY,
+    CarId INT,
+    UserId INT,
+    RentalStart DATE,
+    RentalEnd DATE,
+    TotalPrice DECIMAL(10, 2),
+    PaymentStatus BOOLEAN DEFAULT FALSE,
+	DriverId INT,
+    FOREIGN KEY (CarId) REFERENCES CarsHeaven_Cars(CarId),
+    FOREIGN KEY (UserId) REFERENCES CarsHeaven_Users(UserId),
+	FOREIGN KEY (DriverId) REFERENCES CarsHeaven_Drivers(DriverId)
+);
+ALTER TABLE pc_student.CarsHeaven_Rentals MODIFY COLUMN RentalStart TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE pc_student.CarsHeaven_Rentals MODIFY COLUMN RentalEnd DATETIME;
+SELECT * FROM pc_student.CarsHeaven_Rentals;
+
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Wishlist (
     WishlistId INT AUTO_INCREMENT PRIMARY KEY,
     UserId INT NOT NULL,
@@ -54,21 +71,6 @@ FROM pc_student.CarsHeaven_Wishlist wl
 JOIN pc_student.CarsHeaven_Users u ON wl.UserId = u.UserId
 JOIN pc_student.CarsHeaven_Cars c ON wl.CarId = c.CarId;
 SELECT * FROM pc_student.CarsHeaven_Wishlist;
-
-CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Rentals (
-    RentalId INT AUTO_INCREMENT PRIMARY KEY,
-    CarId INT,
-    UserId INT,
-    RentalStart DATE,
-    RentalEnd DATE,
-    TotalPrice DECIMAL(10, 2),
-    PaymentStatus BOOLEAN DEFAULT FALSE,
-	DriverId INT,
-    FOREIGN KEY (CarId) REFERENCES CarsHeaven_Cars(CarId),
-    FOREIGN KEY (UserId) REFERENCES CarsHeaven_Users(UserId),
-	FOREIGN KEY (DriverId) REFERENCES CarsHeaven_Drivers(DriverId)
-);
-SELECT * FROM pc_student.CarsHeaven_Rentals;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Payments (
     PaymentId INT AUTO_INCREMENT PRIMARY KEY,
