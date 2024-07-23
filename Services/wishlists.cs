@@ -9,7 +9,7 @@ namespace MyCommonStructure.Services
     public class wishlists
     {
         dbServices ds = new dbServices();
-        public async Task<responseData> AddToWishList(requestData rData)
+        public async Task<responseData> CreateWishList(requestData rData)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -67,7 +67,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> UpdateInWishList(requestData rData)
+        public async Task<responseData> EditWishList(requestData rData)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -119,7 +119,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> RemoveFromWishList(requestData rData)
+        public async Task<responseData> DeleteWishList(requestData rData)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -175,7 +175,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> GetAWishListCar(requestData req)
+        public async Task<responseData> GetWishListById(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;
@@ -220,7 +220,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> GetAllWishListCars(requestData req)
+        public async Task<responseData> GetAllWishLists(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;

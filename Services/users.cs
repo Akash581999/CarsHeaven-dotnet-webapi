@@ -21,7 +21,7 @@ namespace MyCommonStructure.Services
             resData.eventID = req.eventID;
             try
             {
-                var query = @"SELECT * FROM pc_student.TEDrones_Users WHERE Role = 'User' ORDER BY UserId ASC;";
+                var query = @"SELECT * FROM pc_student.CarsHeaven_Users WHERE Role = 'User' ORDER BY UserId ASC;";
                 var dbData = ds.executeSQL(query, null);
                 if (dbData == null)
                 {
@@ -97,7 +97,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Email", Email),
                 };
 
-                var getusersql = $"SELECT * FROM pc_student.TEDrones_Users WHERE UserId=@UserId OR Email=@Email;";
+                var getusersql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE UserId=@UserId OR Email=@Email;";
                 var data = ds.ExecuteSQLName(getusersql, myParams);
                 if (data == null || data[0].Count() == 0)
                 {
@@ -154,19 +154,19 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@UserName", req.addInfo["UserName"].ToString()),
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId OR UserName = @UserName;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId OR UserName = @UserName;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Profile not found, No records deleted!";
+                    resData.rData["rMessage"] = "User not found, No records deleted!";
                 }
                 else
                 {
-                    var deleteSql = $"DELETE FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId OR UserName = @UserName;";
+                    var deleteSql = $"DELETE FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId OR UserName = @UserName;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
-                    if (rowsAffected == 0)
+                    if (rowsAffected == null)
                     {
                         resData.rData["rCode"] = 3;
                         resData.rData["rMessage"] = "Invalid credentials, Wrong Id or Password!";
@@ -175,7 +175,7 @@ namespace MyCommonStructure.Services
                     {
                         resData.eventID = req.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rData["rMessage"] = "Profile deleted successfully";
+                        resData.rData["rMessage"] = "User deleted successfully";
                     }
                 }
             }
@@ -187,7 +187,6 @@ namespace MyCommonStructure.Services
             }
             return resData;
         }
-
         public static bool IsValidEmail(string email)
         {
             string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";

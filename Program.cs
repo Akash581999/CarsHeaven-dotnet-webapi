@@ -16,8 +16,10 @@ ConfigureServices(s =>
     s.AddSingleton<deleteProfile>();
     s.AddSingleton<feedbacks>();
     s.AddSingleton<cars>();
-    s.AddSingleton<wishlists>();
     s.AddSingleton<users>();
+    s.AddSingleton<wishlists>();
+    s.AddSingleton<wishListCars>();
+    s.AddSingleton<orders>();
 
     s.AddCors();
     s.AddControllers();
@@ -119,26 +121,50 @@ ConfigureServices(s =>
             if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await cars.GetAllCars(rData));
         });
 
-        var wishlists = e.ServiceProvider.GetRequiredService<wishlists>();
-        e.MapPost("/wishlists", [AllowAnonymous] async (HttpContext http) => // for wishlists details
-        {
-            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
-            requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await wishlists.AddToWishList(rData));
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await wishlists.UpdateInWishList(rData));
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await wishlists.RemoveFromWishList(rData));
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await wishlists.GetAWishListCar(rData));
-            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await wishlists.GetAllWishListCars(rData));
-        });
-
         var users = e.ServiceProvider.GetRequiredService<users>();
-        e.MapPost("/users", [AllowAnonymous] async (HttpContext http) => // for user details
+        e.MapPost("/users", [AllowAnonymous] async (HttpContext http) => // for admin to accesss user details
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
             if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await users.GetAllUsers(rData));
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await users.GetUserById(rData));
             if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await users.DeleteUserById(rData));
+        });
+
+        var wishlists = e.ServiceProvider.GetRequiredService<wishlists>();
+        e.MapPost("/wishlists", [AllowAnonymous] async (HttpContext http) => // for users wishlists details
+        {
+            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+            requestData rData = JsonSerializer.Deserialize<requestData>(body);
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await wishlists.CreateWishList(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await wishlists.EditWishList(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await wishlists.DeleteWishList(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await wishlists.GetWishListById(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await wishlists.GetAllWishLists(rData));
+        });
+
+        var wishListCars = e.ServiceProvider.GetRequiredService<wishListCars>();
+        e.MapPost("/wishListCars", [AllowAnonymous] async (HttpContext http) => // for wishlist cars details
+        {
+            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+            requestData rData = JsonSerializer.Deserialize<requestData>(body);
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await wishListCars.AddToWishList(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await wishListCars.UpdateInWishList(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await wishListCars.RemoveFromWishList(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await wishListCars.GetAWishListCar(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await wishListCars.GetAllWishListCars(rData));
+        });
+
+        var orders = e.ServiceProvider.GetRequiredService<orders>();
+        e.MapPost("/orders", [AllowAnonymous] async (HttpContext http) => // for users order details
+        {
+            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+            requestData rData = JsonSerializer.Deserialize<requestData>(body);
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await orders.CreateOrder(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await orders.EditOrder(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await orders.DeleteOrder(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await orders.GetOrderById(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await orders.GetAllOrders(rData));
         });
 
         e.MapGet("/bing",
