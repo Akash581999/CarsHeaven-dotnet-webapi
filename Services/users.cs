@@ -62,6 +62,8 @@ namespace MyCommonStructure.Services
                                     ProfilePic = rowData.ElementAtOrDefault(9),
                                     IsEmailVerified = rowData.ElementAtOrDefault(10),
                                     IsPhoneVerified = rowData.ElementAtOrDefault(11),
+                                    FirstName = rowData.ElementAtOrDefault(12),
+                                    LastName = rowData.ElementAtOrDefault(13),
                                 };
                                 usersList.Add(user);
                             }
@@ -115,6 +117,8 @@ namespace MyCommonStructure.Services
                     resData.rData["RegistrationDate"] = data[0][0]["RegistrationDate"];
                     resData.rData["Role"] = data[0][0]["Role"];
                     resData.rData["ProfilePic"] = data[0][0]["ProfilePic"];
+                    resData.rData["FirstName"] = data[0][0]["FirstName"];
+                    resData.rData["LastName"] = data[0][0]["LastName"];
                 }
             }
             catch (Exception ex)

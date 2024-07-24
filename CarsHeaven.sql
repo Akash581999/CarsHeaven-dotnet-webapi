@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Users (
     UNIQUE (Email),
     UNIQUE (Phone)
 );
+ALTER TABLE pc_student.CarsHeaven_Users ADD COLUMN FirstName VARCHAR(255) NOT NULL;
+ALTER TABLE pc_student.CarsHeaven_Users ADD COLUMN LastName VARCHAR(255) NOT NULL;
 SELECT * FROM pc_student.CarsHeaven_Users;
 
 CREATE TABLE IF NOT EXISTS pc_student.CarsHeaven_Rentals (

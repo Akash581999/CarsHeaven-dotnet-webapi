@@ -96,6 +96,8 @@ namespace MyCommonStructure.Services
                     resData.rData["ProfilePic"] = data[0][0]["ProfilePic"];
                     resData.rData["Role"] = data[0][0]["Role"];
                     resData.rData["RegistrationDate"] = data[0][0]["RegistrationDate"];
+                    resData.rData["FirstName"] = data[0][0]["FirstName"];
+                    resData.rData["LastName"] = data[0][0]["LastName"];
                 }
             }
             catch (Exception ex)

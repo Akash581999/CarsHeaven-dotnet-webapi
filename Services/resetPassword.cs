@@ -16,34 +16,29 @@ namespace MyCommonStructure.Services
             resData.rData["rCode"] = 0;
             try
             {
-                string input = req.addInfo["UserId"].ToString();
-                bool isEmail = IsValidEmail(input);
-                bool isMobileNumber = IsValidMobileNumber(input);
-                string columnName;
-                if (isEmail)
-                {
-                    columnName = "Email";
-                }
-                else if (isMobileNumber)
-                {
-                    columnName = "Phone";
-                }
-                else
-                {
-                    columnName = "";
-                }
+                // string input = req.addInfo["UserId"].ToString();
+                // bool isMobileNumber = IsValidMobileNumber(input);
+                // string columnName;
+                // if (isMobileNumber)
+                // {
+                //     columnName = "Phone";
+                // }
+                // else
+                // {
+                //     columnName = "";
+                // }
 
-                string UserId = req.addInfo["UserId"].ToString();
+                string Phone = req.addInfo["Phone"].ToString();
                 string NewPassword = req.addInfo["NewPassword"].ToString();
                 string ConfirmPassword = req.addInfo["ConfirmPassword"].ToString();
 
                 var para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@UserId", UserId),
+                    new MySqlParameter("@Phone", Phone),
                     new MySqlParameter("@NewPassword", NewPassword)
                 };
 
-                var selectSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId;";
+                var selectSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE Phone = @Phone;";
                 var data = ds.ExecuteSQLName(selectSql, para);
                 if (data == null || data[0].Count() == 0)
                 {
@@ -54,11 +49,11 @@ namespace MyCommonStructure.Services
                 {
                     if (NewPassword == ConfirmPassword)
                     {
-                        var updateSql = $"UPDATE pc_student.CarsHeaven_Users SET UserPassword = @NewPassword WHERE {columnName} = @UserId;";
+                        var updateSql = $"UPDATE pc_student.CarsHeaven_Users SET UserPassword = @NewPassword WHERE Phone = @Phone;";
                         var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
                         if (rowsAffected == 0)
                         {
-                            selectSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE {columnName} = @UserId AND UserPassword=@NewPassword;";
+                            selectSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE Phone = @Phone AND UserPassword=@NewPassword;";
                             data = ds.ExecuteSQLName(selectSql, para);
                             if (data[0].Count() == 0)
                             {
