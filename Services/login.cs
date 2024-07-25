@@ -90,6 +90,7 @@ namespace MyCommonStructure.Services
                     resData.rData["rCode"] = 0;
                     resData.rData["rMessage"] = "Login Successfully, Welcome!";
                     resData.rData["Token"] = Token;
+                    resData.rData["UserId"] = input;
                 }
             }
             catch (Exception ex)

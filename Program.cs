@@ -81,14 +81,14 @@ ConfigureServices(s =>
         });
 
         var editProfile = e.ServiceProvider.GetRequiredService<editProfile>();
-        e.MapPost("/editProfile", [Authorize] async (HttpContext http) =>
+        e.MapPost("/editProfile", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
             if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await editProfile.EditProfile(rData)); // edit profile
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await editProfile.EditProfilePic(rData)); // edit pic
             if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await editProfile.DeleteProfilePic(rData)); // delete pic
-        }).RequireAuthorization();
+        });
 
         var deleteProfile = e.ServiceProvider.GetRequiredService<deleteProfile>();
         e.MapPost("/deleteProfile", [Authorize] async (HttpContext http) =>

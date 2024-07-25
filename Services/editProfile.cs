@@ -70,11 +70,11 @@ namespace MyCommonStructure.Services
 
                 MySqlParameter[] para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
+                    new MySqlParameter("@Email", req.addInfo["Email"].ToString()),
                     new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE UserId = @UserId;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE Email = @Email;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult[0].Count() == 0)
@@ -84,7 +84,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    string updateSql = $"UPDATE pc_student.CarsHeaven_Users SET ProfilePic = @ProfilePic WHERE UserId = @UserId;";
+                    string updateSql = $"UPDATE pc_student.CarsHeaven_Users SET ProfilePic = @ProfilePic WHERE Email = @Email;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
                     if (rowsAffected == null)
                     {
@@ -115,11 +115,11 @@ namespace MyCommonStructure.Services
             {
                 MySqlParameter[] para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
+                    new MySqlParameter("@Email", req.addInfo["Email"].ToString()),
                     // new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE UserId = @UserId;";
+                var checkSql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE Email = @Email;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult[0].Count() == 0)
@@ -129,7 +129,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var updateSql = $"UPDATE pc_student.CarsHeaven_Users SET ProfilePic = NULL WHERE UserId = @UserId;";
+                    var updateSql = $"UPDATE pc_student.CarsHeaven_Users SET ProfilePic = NULL WHERE Email = @Email;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
                     if (rowsAffected == null)
 
