@@ -65,12 +65,12 @@ ConfigureServices(s =>
         });
 
         var changePassword = e.ServiceProvider.GetRequiredService<changePassword>();
-        e.MapPost("/changePassword", [Authorize] async (HttpContext http) =>
+        e.MapPost("/changePassword", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
             if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData)); // change Password
-        }).RequireAuthorization();
+        });
 
         var resetPassword = e.ServiceProvider.GetRequiredService<resetPassword>();
         e.MapPost("/resetPassword", [AllowAnonymous] async (HttpContext http) =>
