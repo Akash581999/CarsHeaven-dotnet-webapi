@@ -77,7 +77,10 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPassword(rData)); // reset Password
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await resetPassword.SendOtpToPhone(rData)); // send OTP to phone
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await resetPassword.VerifyPhoneOtp(rData)); // Verify sent OTP
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPasswordByPhone(rData)); // reset password by phone
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPasswordByMail(rData)); // reset password by email
         });
 
         var editProfile = e.ServiceProvider.GetRequiredService<editProfile>();
