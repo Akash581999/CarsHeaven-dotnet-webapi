@@ -23,11 +23,11 @@ namespace MyCommonStructure.Services
 
                 var sql = @"select * from pc_student.CarsHeaven_Users where Phone=@Phone;";
                 var data = ds.ExecuteSQLName(sql, para);
-                if (data == null && data[0].Count() == 0)
+                if (data[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 1;
                     resData.rStatus = 404;
-                    resData.rData["rMessage"] = "Invalid Credentials";
+                    resData.rData["rMessage"] = "Phone number not found!!";
                 }
                 else
                 {
@@ -132,7 +132,7 @@ namespace MyCommonStructure.Services
                 if (data == null || data[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Profile number not found, Please enter a valid details";
+                    resData.rData["rMessage"] = "Phone number not found, Please enter a valid details";
                 }
                 else
                 {
