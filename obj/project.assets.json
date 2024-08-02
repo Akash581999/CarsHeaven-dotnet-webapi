@@ -2320,26 +2320,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\akash2.kumar\\.nuget\\packages\\": {}
+    "C:\\Users\\abhil\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\akash2.kumar\\Desktop\\CarsHeaven\\CarsHeaven-Webapi\\MyCommonStructure\\MyCommonStructure.csproj",
+      "projectUniqueName": "F:\\CarsHeaven\\CarsHeaven-dotnet-webapi\\MyCommonStructure.csproj",
       "projectName": "MyCommonStructure",
-      "projectPath": "C:\\Users\\akash2.kumar\\Desktop\\CarsHeaven\\CarsHeaven-Webapi\\MyCommonStructure\\MyCommonStructure.csproj",
-      "packagesPath": "C:\\Users\\akash2.kumar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\akash2.kumar\\Desktop\\CarsHeaven\\CarsHeaven-Webapi\\MyCommonStructure\\obj\\",
+      "projectPath": "F:\\CarsHeaven\\CarsHeaven-dotnet-webapi\\MyCommonStructure.csproj",
+      "packagesPath": "C:\\Users\\abhil\\.nuget\\packages\\",
+      "outputPath": "F:\\CarsHeaven\\CarsHeaven-dotnet-webapi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\akash2.kumar\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\abhil\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2352,11 +2350,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -2391,24 +2384,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.29, 6.0.29]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[6.0.29, 6.0.29]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.29, 6.0.29]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.29, 6.0.29]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -2417,30 +2392,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.424\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'Microsoft.AspNetCore.Authentication.JwtBearer' 3.1.9 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-q7cg-43mg-qp69",
-      "libraryId": "Microsoft.AspNetCore.Authentication.JwtBearer",
-      "targetGraphs": [
-        "net6.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'System.Text.Json' 7.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-hh2w-p6rv-4g7w",
-      "libraryId": "System.Text.Json",
-      "targetGraphs": [
-        "net6.0"
-      ]
-    }
-  ]
+  }
 }

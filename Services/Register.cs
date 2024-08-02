@@ -71,13 +71,15 @@ namespace MyCommonStructure.Services
             resData.rData["rMessage"] = "User Details Retrieved Successfully";
             try
             {
+                string UserId = req.addInfo["UserId"].ToString();
                 string Email = req.addInfo["Email"].ToString();
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@Email", Email)
+                    new MySqlParameter("@UserId", UserId),
+                    new MySqlParameter("@Email", Email),
                 };
 
-                var sql = "SELECT * FROM pc_student.CarsHeaven_Users WHERE Email=@Email;";
+                var sql = $"SELECT * FROM pc_student.CarsHeaven_Users WHERE UserId=@UserId OR Email=@Email;";
                 var data = ds.ExecuteSQLName(sql, myParams);
 
                 if (data == null || data[0].Count() == 0)
