@@ -39,8 +39,8 @@ ConfigureServices(s =>
     app.UseRouting();
     app.UseStaticFiles();
 
-    app.UseAuthorization();
     app.UseAuthentication();
+    app.UseAuthorization();
 
     app.UseEndpoints(e =>
     {
